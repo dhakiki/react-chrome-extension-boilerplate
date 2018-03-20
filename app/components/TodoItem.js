@@ -9,11 +9,13 @@ export default class TodoItem extends Component {
     todo: PropTypes.object.isRequired,
     editTodo: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
-    completeTodo: PropTypes.func.isRequired
+    completeTodo: PropTypes.func.isRequired,
+    openPage: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
+    chrome.extension.getBackgroundPage().console.log(props.openPage);
     this.state = {
       editing: false
     };
@@ -33,15 +35,19 @@ export default class TodoItem extends Component {
     this.setState({ editing: false });
   };
 
-  handleComplete = () => {
-    const { todo, completeTodo } = this.props;
-    completeTodo(todo.id);
-  };
+  // handleComplete = () => {
+  //   const { todo, completeTodo } = this.props;
+  //   completeTodo(todo.id);
+  // };
 
   handleDelete = () => {
     const { todo, deleteTodo } = this.props;
     deleteTodo(todo.id);
   };
+
+  openPage(url) {
+    chrome.tabs.create({url})
+  }
 
   render() {
     const { todo } = this.props;
@@ -58,18 +64,16 @@ export default class TodoItem extends Component {
     } else {
       element = (
         <div className={style.view}>
-          <input
-            className={style.toggle}
-            type="checkbox"
-            checked={todo.completed}
-            onChange={this.handleComplete}
-          />
           <label onDoubleClick={this.handleDoubleClick}>
             {todo.text}
           </label>
           <button
             className={style.destroy}
             onClick={this.handleDelete}
+          />
+          <button
+            className={style.openPage}
+            onClick={() => this.openPage(todo.text)}
           />
         </div>
       );

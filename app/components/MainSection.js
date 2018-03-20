@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import TodoItem from './TodoItem';
-import Footer from './Footer';
+// import Footer from './Footer';
 import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/TodoFilters';
 import style from './MainSection.css';
 
@@ -35,16 +35,16 @@ export default class MainSection extends Component {
 
   renderToggleAll(completedCount) {
     const { todos, actions } = this.props;
-    if (todos.length > 0) {
-      return (
-        <input
-          className={style.toggleAll}
-          type="checkbox"
-          checked={completedCount === todos.length}
-          onChange={actions.completeAll}
-        />
-      );
-    }
+    // if (todos.length > 0) {
+    //   return (
+    //     <input
+    //       className={style.toggleAll}
+    //       type="checkbox"
+    //       checked={completedCount === todos.length}
+    //       onChange={actions.completeAll}
+    //     />
+    //   );
+    // }
   }
 
   renderFooter(completedCount) {
@@ -52,17 +52,17 @@ export default class MainSection extends Component {
     const { filter } = this.state;
     const activeCount = todos.length - completedCount;
 
-    if (todos.length) {
-      return (
-        <Footer
-          completedCount={completedCount}
-          activeCount={activeCount}
-          filter={filter}
-          onClearCompleted={this.handleClearCompleted}
-          onShow={this.handleShow}
-        />
-      );
-    }
+    // if (todos.length) {
+    //   return (
+    //     <Footer
+    //       completedCount={completedCount}
+    //       activeCount={activeCount}
+    //       filter={filter}
+    //       onClearCompleted={this.handleClearCompleted}
+    //       onShow={this.handleShow}
+    //     />
+    //   );
+    // }
   }
 
   render() {
