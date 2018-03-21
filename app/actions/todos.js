@@ -23,3 +23,7 @@ export function completeAll() {
 export function clearCompleted() {
   return { type: types.CLEAR_COMPLETED };
 }
+
+export function setSelectingPageId(id) {
+  return { type: types.SET_SELECTING_PAGE_ID, id };
+}

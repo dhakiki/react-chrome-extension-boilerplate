@@ -6,6 +6,7 @@ import './todoapp.css';
 chrome.storage.local.get('state', (obj) => {
   const { state } = obj;
   const initialState = JSON.parse(state || '{}');
+  chrome.extension.getBackgroundPage().console.log(obj);
 
   const createStore = require('../../app/store/configureStore');
 

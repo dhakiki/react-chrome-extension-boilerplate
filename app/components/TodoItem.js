@@ -11,13 +11,18 @@ export default class TodoItem extends Component {
     deleteTodo: PropTypes.func.isRequired,
     completeTodo: PropTypes.func.isRequired,
     openPage: PropTypes.func.isRequired,
+    expanded: PropTypes.bool.isRequired,
+    setSelectingPageId: PropTypes.func.isRequired,
+    clearSelectingPageId: PropTypes.func.isRequired,
+    onToggleExpandedState: PropTypes.func.isRequired,
+    currentSelectModeId: PropTypes.number.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
     chrome.extension.getBackgroundPage().console.log(props.openPage);
     this.state = {
-      editing: false
+      editing: false,
     };
   }
 
@@ -42,7 +47,7 @@ export default class TodoItem extends Component {
 
   handleDelete = () => {
     const { todo, deleteTodo } = this.props;
-    deleteTodo(todo.id);
+    eleteTodo(todo.id);
   };
 
   openPage(url) {
@@ -64,6 +69,10 @@ export default class TodoItem extends Component {
     } else {
       element = (
         <div className={style.view}>
+          <button
+            className={this.props.expanded ? style.collapse : style.expand}
+            onClick={() => this.props.onToggleExpandedState(todo.id)}
+          />
           <label onDoubleClick={this.handleDoubleClick}>
             {todo.text}
           </label>
@@ -75,6 +84,16 @@ export default class TodoItem extends Component {
             className={style.openPage}
             onClick={() => this.openPage(todo.text)}
           />
+          {this.props.expanded &&
+            <div className={style.itemsContainer}>
+              {this.props.currentSelectModeId == '' &&
+                <div className={style.addItem} onClick={() => this.props.setSelectingPageId(todo.id)}>+ Add Item</div>
+              }
+              {this.props.currentSelectModeId == todo.id &&
+                <div className={style.cancelSelectMode} onClick={this.props.clearSelectingPageId}>Exit Selection Mode</div>
+              }
+            </div>
+          }
         </div>
       );
     }

@@ -14,12 +14,22 @@ export default class MainSection extends Component {
 
   static propTypes = {
     todos: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
-    this.state = { filter: SHOW_ALL };
+    const { todos, settings, actions } = props;
+    let expandedState = {}
+    todos.forEach(({id}) => {
+      if (id == settings.selectingPageId)
+        expandedState[id] = true;
+      else
+        expandedState[id] = false;
+    })
+    chrome.extension.getBackgroundPage().console.log(expandedState);
+    this.state = { filter: SHOW_ALL, expandedState };
   }
 
   handleClearCompleted = () => {
@@ -65,8 +75,26 @@ export default class MainSection extends Component {
     // }
   }
 
+  toggleExpandedState(id) {
+    let newExpandedState = this.state.expandedState;
+    newExpandedState[id] = !newExpandedState[id];
+    this.setState({expandedState: newExpandedState});
+  }
+
+  collapseNonSelectPagesAndSet(idToBeSet) {
+    let expandedState = {}
+    this.props.todos.forEach(({id}) => {
+      if (id == idToBeSet)
+        expandedState[id] = true;
+      else
+        expandedState[id] = false;
+    })
+    this.setState({expandedState});
+    this.props.actions.setSelectingPageId(idToBeSet);
+  }
+
   render() {
-    const { todos, actions } = this.props;
+    const { todos, settings, actions } = this.props;
     const { filter } = this.state;
 
     const filteredTodos = todos.filter(TODO_FILTERS[filter]);
@@ -80,7 +108,7 @@ export default class MainSection extends Component {
         {this.renderToggleAll(completedCount)}
         <ul className={style.todoList}>
           {filteredTodos.map(todo =>
-            <TodoItem key={todo.id} todo={todo} {...actions} />
+            <TodoItem currentSelectModeId={settings.selectingPageId} key={todo.id} expanded={this.state.expandedState[todo.id]} todo={todo} {...actions} setSelectingPageId={this.collapseNonSelectPagesAndSet.bind(this)} onToggleExpandedState={this.toggleExpandedState.bind(this)} />
           )}
         </ul>
         {this.renderFooter(completedCount)}
