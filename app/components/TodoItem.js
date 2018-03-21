@@ -68,7 +68,7 @@ export default class TodoItem extends Component {
       );
     } else {
       element = (
-        <div className={style.view}>
+        <div className={classnames({[style.view]: true, [style.active]: this.props.currentSelectModeId == todo.id})}>
           <button
             className={this.props.expanded ? style.collapse : style.expand}
             onClick={() => this.props.onToggleExpandedState(todo.id)}

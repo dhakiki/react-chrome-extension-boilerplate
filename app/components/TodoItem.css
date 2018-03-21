@@ -103,6 +103,10 @@
   text-decoration: line-through;
 }
 
+.active {
+  background: lightblue;
+}
+
 /*
   Hack to remove background from Mobile Safari.
   Can't use it globally since it destroys checkboxes in Firefox
