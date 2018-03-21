@@ -54,6 +54,14 @@ export default class TodoItem extends Component {
     chrome.tabs.create({url})
   }
 
+  sendMessageAndSet(id) {
+    chrome.extension.getBackgroundPage().console.log('going to send activate message');
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {type: "activateSelectionMode", pageId: id}, function(response) {});
+    });
+    this.props.setSelectingPageId(id);
+  }
+
   render() {
     const { todo } = this.props;
 
@@ -87,7 +95,7 @@ export default class TodoItem extends Component {
           {this.props.expanded &&
             <div className={style.itemsContainer}>
               {this.props.currentSelectModeId == '' &&
-                <div className={style.addItem} onClick={() => this.props.setSelectingPageId(todo.id)}>+ Add Item</div>
+                <div className={style.addItem} onClick={() => this.sendMessageAndSet(todo.id)}>+ Add Item</div>
               }
               {this.props.currentSelectModeId == todo.id &&
                 <div className={style.cancelSelectMode} onClick={this.props.clearSelectingPageId}>Exit Selection Mode</div>
