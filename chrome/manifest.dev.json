@@ -13,8 +13,15 @@
     "128": "img/icon-128.png"
   },
   "web_accessible_resources": [
-    "inject.html"
+    "inject.html",
+    "resources/*"
   ],
+  "content_scripts": [{
+     "matches": ["<all_urls>"],
+     "all_frames": true,
+     "js":      ["resources/jquery.min.js", "scripts/content.js"],
+     "css":      ["css/content.css"]
+   }],
   "background": {
     "page": "background.html"
   },
