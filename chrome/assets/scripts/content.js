@@ -68,7 +68,19 @@ $( document ).ready(function() {
               console.log('dude i should totally log this', this, val);
               console.log(getPathTo(this));
               console.log('going to send response');
-              sendResponse({complete: "true", item: {xpath: getPathTo(this), value: val, pageId: request.pageId}});
+              var element = this;
+              chrome.storage.sync.get('itemTracker', function(obj) {
+                console.log('hai', obj);
+                var itemTracker = JSON.parse(obj.itemTracker || "{}");
+                if (!itemTracker[request.pageId.toString()]) itemTracker[request.pageId.toString()] = [];
+                itemTracker[request.pageId.toString()].push({xpath: getPathTo(element), value: val});
+                chrome.storage.sync.set({itemTracker: JSON.stringify(itemTracker)}, function() {
+                  console.log('stored');
+                });
+              });
+              // chrome.runtime.sendMessage({type: 'itemSelected', complete: "true", pageId: request.pageId, item: {xpath: getPathTo(this), value: val}}, (response) => {
+              //   console.log(response);
+              // });
               // how to grab the dom element again
               console.log($(document).xpathEvaluate(getPathTo(this)).get(0));
             }

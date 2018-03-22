@@ -31,3 +31,29 @@ promisifyAll(chrome.storage, [
 require('./background/contextMenus');
 require('./background/inject');
 //require('./background/badge');
+
+chrome.runtime.onMessage.addListener((msg, sender, response) => {
+    console.log('ooooh');
+    switch (msg.type) {
+        case 'popupInit':
+            console.log('a');
+            //response(tabStorage[msg.tabId]);
+            break;
+        case 'itemSelected':
+            chrome.storage.sync.get(['itemTracker'], function(itemTracker) {
+              console.log('hai', itemTracker);
+              if (!itemTracker[msg.pageId]) itemTracker[msg.pageId] = [];
+              itemTracker[msg.pageId].push(msg.item);
+              chrome.storage.sync.set({itemTracker}, function() {
+                console.log('stored');
+                response('success');
+              });
+            });
+            //console.log(JSON.stringify(window.localStorage.getItem("itemTracker")), 'hia');
+            //var itemMap = JSON.parse(window.localStorage.getItem("itemTracker") || '{}');
+            //window.localStorage.setItem("itemTracker", JSON.stringify(itemMap));
+        default:
+            response('unknown request');
+            break;
+    }
+});
