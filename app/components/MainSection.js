@@ -16,6 +16,7 @@ export default class MainSection extends Component {
     todos: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
+    pageLastSelectedFrom: PropTypes.number.isRequired,
   };
 
   constructor(props, context) {

@@ -69,12 +69,14 @@ $( document ).ready(function() {
               console.log(getPathTo(this));
               console.log('going to send response');
               var element = this;
-              chrome.storage.sync.get('itemTracker', function(obj) {
+              chrome.storage.sync.get('state', function(obj) {
                 console.log('hai', obj);
-                var itemTracker = JSON.parse(obj.itemTracker || "{}");
-                if (!itemTracker[request.pageId.toString()]) itemTracker[request.pageId.toString()] = [];
-                itemTracker[request.pageId.toString()].push({xpath: getPathTo(element), value: val});
-                chrome.storage.sync.set({itemTracker: JSON.stringify(itemTracker)}, function() {
+                let currentState = JSON.parse(obj.state || '{}');
+                if (!currentState.itemTracker) currentState.itemTracker = {};
+                if (!currentState.itemTracker[request.pageId.toString()]) currentState.itemTracker[request.pageId.toString()] = [];
+                currentState.itemTracker[request.pageId.toString()].push({xpath: getPathTo(element), value: val});
+                currentState.pageLastSelectedFrom = request.pageId;
+                chrome.storage.sync.set({state: JSON.stringify(currentState)}, function() {
                   console.log('stored');
                 });
               });
